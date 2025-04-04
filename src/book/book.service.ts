@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 
-import { PrismaService } from 'src/prisma/prisma.service';
-import { prismaExclude } from 'src/util/prisma-exclude';
-import { removeWhitespace } from 'src/util/remove-whitepsace';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { PrismaService } from "src/prisma/prisma.service";
+import { prismaExclude } from "src/util/prisma-exclude";
+import { removeWhitespace } from "src/util/remove-whitepsace";
+import { CreateBookDto } from "./dto/create-book.dto";
+import { UpdateBookDto } from "./dto/update-book.dto";
 
 @Injectable()
 export class BookService {
@@ -19,24 +19,24 @@ export class BookService {
 
     return await this.prisma.book.create({
       data: { ...createBookDto, searchIndex },
-      select: prismaExclude('Book', ['searchIndex']),
+      select: prismaExclude("Book", ["searchIndex"]),
     });
   }
 
   async findAllBooks() {
     return await this.prisma.book.findMany({
-      select: prismaExclude('Book', ['searchIndex']),
+      select: prismaExclude("Book", ["searchIndex"]),
     });
   }
 
   async searchBooks(q?: string) {
-    const searchText = q.replace(/\s+/g, '');
+    const searchText = q.replace(/\s+/g, "");
     return await this.prisma.book.findMany({
-      select: prismaExclude('Book', ['searchIndex']),
+      select: prismaExclude("Book", ["searchIndex"]),
       where: {
         OR: [
           {
-            searchIndex: { contains: searchText, mode: 'insensitive' },
+            searchIndex: { contains: searchText, mode: "insensitive" },
           },
         ],
       },
@@ -44,16 +44,19 @@ export class BookService {
   }
 
   async findRandomBooks() {
-    const query = `
-    SELECT id, title, "subTitle", description, author, publisher, "coverImgUrl" 
-    FROM "Book" ORDER BY RANDOM() LIMIT 3
-    `;
-    return await this.prisma.$queryRawUnsafe(query);
+    const totalBooks = await this.prisma.book.count();
+    const skip = Math.floor(Math.random() * (totalBooks - 3));
+
+    return await this.prisma.book.findMany({
+      take: 3,
+      skip: Math.max(0, skip),
+      select: prismaExclude("Book", ["searchIndex"]),
+    });
   }
 
   async findOneBook(id: number) {
     const book = await this.prisma.book.findUnique({
-      select: prismaExclude('Book', ['searchIndex']),
+      select: prismaExclude("Book", ["searchIndex"]),
       where: {
         id: id,
       },
@@ -67,7 +70,7 @@ export class BookService {
   async updateBook(id: number, dto: UpdateBookDto) {
     const beforeUpdateData = await this.prisma.book
       .findUnique({
-        select: prismaExclude('Book', ['searchIndex']),
+        select: prismaExclude("Book", ["searchIndex"]),
         where: {
           id: id,
         },
@@ -85,7 +88,7 @@ export class BookService {
     ]);
 
     return await this.prisma.book.update({
-      select: prismaExclude('Book', ['searchIndex']),
+      select: prismaExclude("Book", ["searchIndex"]),
       where: {
         id: id,
       },
