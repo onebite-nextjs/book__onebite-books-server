@@ -54,13 +54,6 @@ DATABASE_URL="postgresql://postgres.uektaydysdsygkomxtuh:[YOUR-PASSWORD]@aws-0-a
 DIRECT_URL="postgresql://postgres.uektaydysdsygkomxtuh:[YOUR-PASSWORD]@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres"
 ```
 
-복사한 `Connection String`을 `.env` 파일을 생성하여 다음과 같이 붙여넣습니다.
-
-```
-// .env
-DATABASE_URL="방금 복사한 Connection String"
-```
-
 잘 붙여넣었다면, 이제 DATABASE_URL과 DIRECT_URL 환경 변수에 저장된 각 Connection String 내부의 비밀번호를 수정해야 합니다.
 
 각 변수의 값에서 [YOUR-PASSWORD] 로 표시된 부분을 앞서 설정한 데이터베이스 비밀번호로 변경합니다. 이때 대괄호까지 함께 삭제해야 합니다.
