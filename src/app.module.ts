@@ -1,10 +1,11 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { BookModule } from './book/book.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { DelayMiddleware } from './middleware/delay.middleware';
-import { ReviewModule } from './review/review.module';
+import { MiddlewareConsumer, Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { BookModule } from "./book/book.module";
+import { PrismaModule } from "./prisma/prisma.module";
+import { DelayMiddleware } from "./middleware/delay.middleware";
+import { ReviewModule } from "./review/review.module";
+import { LoggerMiddleware } from "./middleware/logger.middleware";
 
 @Module({
   imports: [BookModule, ReviewModule, PrismaModule],
@@ -13,6 +14,6 @@ import { ReviewModule } from './review/review.module';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(DelayMiddleware).forRoutes('*'); // 모든 경로에 미들웨어 적용
+    consumer.apply(DelayMiddleware, LoggerMiddleware).forRoutes("*"); // 모든 경로에 미들웨어 적용
   }
 }
